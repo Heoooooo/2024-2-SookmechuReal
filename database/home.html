@@ -11,17 +11,22 @@
             padding: 0;
         }
         .header {
-            background-color: orange;
+            background-color: rgb(27, 18, 128);
             display: flex;
             justify-content: flex-start;
             align-items: center;
             font-size: 24px;
             padding-left: 15px;
         }
+        .header img {
+            width: 80px;
+            max-width: 100%;
+            height: auto;
+        }
         .nav-menu {
-            background-color: orange;
+            background-color: rgb(27, 18, 128);
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             padding: 10px 20px;
             position: relative;
             margin-bottom: 30px;
@@ -34,7 +39,7 @@
             text-decoration: none;
         }
         .nav-menu a:hover {
-             background-color: rgb(245, 156, 47);
+             background-color: rgb(27, 18, 128);
         }
         .body-content {
             display: flex;
@@ -43,32 +48,66 @@
             color: #ffffff;
             flex: 1;
         }
-        .sidebar {
-            width: 250px;
-            background-color: orange;
-            flex-direction: column;
-            margin-right: 2rem;
-        }
         .map-content {
             display: flex;
-            flex-direction: column;
+            justify-content: center; /* 가로 중앙 정렬 */
+            align-items: center; /* 세로 중앙 정렬 (필요에 따라 적용) */
             padding: 1rem;
-            background-color: orange;
-            justify-content: flex-end;
+            background-color: rgb(27, 18, 128);
             flex: 1;
         }
+
         .map-content img {
             max-width: 100%;
+            width: 1000px;
+            height: auto; /* 이미지 비율 유지 */
+        }
+        /* To eat list를 가로로 배치 */
+        .to-eat-list-container {
+            background-color: rgb(27, 18, 128); /* 기존 파란 배경 */
+            padding: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .to-eat-list-inner {
+            background-color: #ffffff; /* 흰색 배경 */
+            padding: 20px;
+            border-radius: 15px; /* 둥근 모서리 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+            color: black;
+            width: 100%;
+        }
+
+        .to-eat-list-container input, 
+        .to-eat-list-container button {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        .to-eat-list-container ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* 세로로 배치 */
+        }
+        .to-eat-list-container li {
+            margin-bottom: 10px;
+        }
+        .to-eat-list-container li button {
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <h1>HOME</h1>
+        <h1>숙메추real</h1>
+        <img src="/database/img/song1-removebg-preview (1).png" alt="눈송이">
     </header>
     <nav class="nav-menu">
         <div id="random-food">
-            나는 오늘 <span id="random-food_item"></span> 먹을까
+            나는 오늘 <span id="random-food_item" style="border-bottom: 2px solid white; padding: 0 30px;"></span> 먹을까
             <button onclick="generateRandomFood()">음식 추천받기</button>
         </div>
     
@@ -76,32 +115,36 @@
             <a href="list.html">나의 기록</a>
         </div>
     </nav>
-    <div class="body-content">
-        <aside class="sidebar">
+
+    <!-- To eat list를 메뉴 아래 가로로 배치 -->
+    <div class="to-eat-list-container">
+        <div class="to-eat-list-inner">
             <h2>To eat list</h2>
-            <input type="text" id="new-item" placeholder="">
+            <input type="text" id="new-item" placeholder="음식 추가">
             <button onclick="addItem()">추가</button>
             <ul id="item-list"></ul>
-        </aside>
+        </div>
+    </div>
+    
+
+    <div class="body-content">
         <div class="map-content">
-            <img src="/img/map.jpg" alt="숙대맛집 지도" usemap="#map" onclick="showCoords(event)">
+            <img src="/database/img/map.jpg" alt="숙대맛집 지도" usemap="#map" onclick="showCoords(event)">
             <map name="map">
                 <area shape="rect" coords="410,14.6875,573,44" href="/database/ludabread_c.html" alt="Luda Bread">
             </map>
         </div>
     </div>
+
     <script>
+        document.addEventListener("DOMContentLoaded", loadItems);
+
         function generateRandomFood() {
-            // 랜덤 리스트 생성
             const foodList = ["루다 브레드", "청파동커피", "포36거리", "마돈나", "쎄라비", "메르시", "아리랑", "빨봉분식", "샐러디", "본솔커피", "고씨네", "일미오", "몬스터플레이스", "위드달걀빵", "리또리또", "라사천마라탕", "미스터카츠", "또와또", "숙대소반", "감래", "베라", "마시앤바시", "긴자료코", "홍곱창", "타코비", "와플하우스", "갯마을칼국수", "어바웃샤브", "알촌", " 경성돈까스", "신머이쌀국수", "작은도쿄", "가문의 우동", "달볶이", "띵동와플", "효이다방", "브루다", "너드커피", "탕화쿵푸" ,"포라임", "행복은간장밥", "음식미담", "숙대앞맛있는샌드위치", "마라명가", "을의 커피", "봉구스", "이삭", "피굽남피자", "스타벅스", "구이마당", "네코노스시", "피자보이시나", "청파맨션", "정", "행복한 떡집", "ASAP", "프랭크버거", "서브웨이", "두끼", "카페코지", "왈가닥", "만나칼국수", "몽소", "말죽거리 꽈배기", "비일", "베나레스", "까치네", "신내떡", "쿳사", "밥때"];
             
             const randomFood = foodList[Math.floor(Math.random() * foodList.length)];
             
-            // 문구 생성
-            const randomMessage = `${randomFood}`;
-            
-            // 문구를 HTML 삽입하는 부분
-            document.getElementById("random-food_item").innerText = randomMessage;
+            document.getElementById("random-food_item").innerText = randomFood;
         }
 
         function addItem() {
@@ -117,12 +160,50 @@
 
         function createDeleteButton() {
             const deleteBtn = document.createElement('button');
-            deleteBtn.innerText = '삭제';
+            deleteBtn.innerText = 'Delete';
+            deleteBtn.style.backgroundColor = 'green';  // 초록색 삭제 버튼
+            deleteBtn.style.color = 'white';  // 글자 색은 흰색
+            deleteBtn.style.border = 'none';  // 테두리 제거
+            deleteBtn.style.borderRadius = '8px';  // 둥근 모서리
+            deleteBtn.style.padding = '5px 10px';  // 버튼 패딩
             deleteBtn.onclick = function() {
                 const li = this.parentElement;
                 li.parentElement.removeChild(li);
             };
             return deleteBtn;
+        }
+
+        // 추가 버튼 스타일 변경
+        const addButton = document.querySelector('button[onclick="addItem()"]');
+        addButton.style.backgroundColor = 'red';  // 빨간색 추가 버튼
+        addButton.style.color = 'white';  // 글자 색은 흰색
+        addButton.style.border = 'none';  // 테두리 제거
+        addButton.style.borderRadius = '8px';  // 둥근 모서리
+        addButton.style.padding = '5px 10px';  // 버튼 패딩
+        addButton.innerText = 'Add';  // 텍스트 변경
+        // 로컬 스토리지에 항목 저장
+        function saveItem(item) {
+            let items = JSON.parse(localStorage.getItem('toEatList')) || [];
+            items.push(item);
+            localStorage.setItem('toEatList', JSON.stringify(items));
+        }
+
+        // 로컬 스토리지에서 항목 불러오기
+        function loadItems() {
+            const items = JSON.parse(localStorage.getItem('toEatList')) || [];
+            items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerText = item;
+                li.appendChild(createDeleteButton());
+                document.getElementById('item-list').appendChild(li);
+            });
+        }
+
+        // 로컬 스토리지에서 항목 삭제
+        function removeItem(item) {
+            let items = JSON.parse(localStorage.getItem('toEatList')) || [];
+            items = items.filter(i => i !== item);
+            localStorage.setItem('toEatList', JSON.stringify(items));
         }
 
         function showCoords(event) {
